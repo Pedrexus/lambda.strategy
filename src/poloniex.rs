@@ -41,6 +41,10 @@ pub async fn return_chart_data(
 
     let response = reqwest::get(&request_url).await.expect("get response");
 
+    if response.status().as_u16() >= 400 {
+        panic!(response.text())
+    }
+
     response.json().await.expect("get json")
 }
 
@@ -77,7 +81,7 @@ mod tests {
     #[tokio::test]
     async fn test_return_chart_data() {
         let currency_pair = "BTC_XMR";
-        let period = CandlestickPeriod::_4Hrs as u64;
+        let period = 14400;
         let start = 1546300800;
         let end = 1546646400;
 
