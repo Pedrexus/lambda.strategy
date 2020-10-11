@@ -1,7 +1,5 @@
 use reqwest;
-use serde::Deserialize;
-
-struct Poloniex {}
+use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone)]
 enum CandlestickPeriod {
@@ -13,9 +11,9 @@ enum CandlestickPeriod {
     _1Day = 24 * 3600,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
-struct Candle {
+pub struct Candle {
     date: usize,
     high: f64,
     low: f64,
@@ -26,26 +24,24 @@ struct Candle {
     weighted_average: f64,
 }
 
-impl Poloniex {
-    async fn return_chart_data(
-        currency_pair: &str,
-        period: CandlestickPeriod,
-        start: usize,
-        end: usize,
-    ) -> Vec<Candle> {
-        let request_url = format!(
+pub async fn return_chart_data(
+    currency_pair: &str,
+    period: u64,
+    start: u64,
+    end: u64,
+) -> Vec<Candle> {
+    let request_url = format!(
             "https://poloniex.com/public?command={command}&currencyPair={currency_pair}&start={start}&end={end}&period={period}",
             command = "returnChartData",
             currency_pair = currency_pair,
             start = start,
             end = end,
-            period = period as usize
+            period = period
         );
 
-        let response = reqwest::get(&request_url).await.expect("get response");
+    let response = reqwest::get(&request_url).await.expect("get response");
 
-        response.json().await.expect("get json")
-    }
+    response.json().await.expect("get json")
 }
 
 #[cfg(test)]
@@ -69,19 +65,23 @@ mod tests {
     #[tokio::test]
     async fn test_get() {
         let url = "https://poloniex.com/public?command=returnChartData&currencyPair=BTC_XMR&start=1546300800&end=1546646400&period=14400";
-        let response: Vec<Candle> = reqwest::get(url).await.expect("get response").json().await.expect("get json");
-        
+        let response: Vec<Candle> = reqwest::get(url)
+            .await
+            .expect("get response")
+            .json()
+            .await
+            .expect("get json");
         assert_eq!(response.len(), 25);
     }
 
     #[tokio::test]
     async fn test_return_chart_data() {
         let currency_pair = "BTC_XMR";
-        let period = CandlestickPeriod::_4Hrs;
+        let period = CandlestickPeriod::_4Hrs as u64;
         let start = 1546300800;
         let end = 1546646400;
 
-        let data = Poloniex::return_chart_data(&currency_pair, period, start, end).await;
+        let data = return_chart_data(&currency_pair, period, start, end).await;
 
         assert_eq!(data.len(), 25);
 

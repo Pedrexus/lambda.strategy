@@ -1,10 +1,9 @@
-use crate::handler::HandlerError;
 use crate::handler::handler;
-use lambda::{handler_fn, Context};
-use serde_json::Value;
+use crate::handler::HandlerError;
+use lambda::handler_fn;
 
-mod poloniex;
 mod handler;
+mod poloniex;
 
 #[tokio::main]
 async fn main() -> Result<(), HandlerError> {
