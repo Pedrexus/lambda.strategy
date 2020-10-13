@@ -1,11 +1,11 @@
-use crate::handler::handler;
-use crate::handler::HandlerError;
+use crate::handler::{handler, HandlerError};
 use lambda::handler_fn;
 
+mod exchange;
 mod handler;
-mod poloniex;
+mod strategies;
 
 #[tokio::main]
 async fn main() -> Result<(), HandlerError> {
-    lambda::run(handler_fn(handler)).await
+  lambda::run(handler_fn(handler)).await
 }
