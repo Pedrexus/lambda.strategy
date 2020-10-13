@@ -7,5 +7,5 @@ mod strategies;
 
 #[tokio::main]
 async fn main() -> Result<(), HandlerError> {
-  lambda::run(handler_fn(handler)).await
+    lambda::run(handler_fn(handler)).await
 }
