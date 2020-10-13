@@ -70,7 +70,7 @@ mod tests {
             .await
             .unwrap();
 
-        assert_eq!(data.shape(), (25, 6));
+        assert_eq!(data.shape(), (25, 8));
 
         // let item = &data[0];
 

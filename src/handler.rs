@@ -53,6 +53,6 @@ mod tests {
             .await
             .expect("expected Ok(_) value");
 
-        assert_eq!(response, "this");
+        assert_eq!(response, json!({ "msg": "time to buy BTC_XMR!" }));
     }
 }
