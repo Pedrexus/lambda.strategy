@@ -10,6 +10,7 @@ jobs:
         uses: hecrj/setup-rust-action@v1
         with:
           components: rustfmt
+          rust-version: nightly
       - uses: actions/checkout@v2
       - run: cargo fmt --all -- --check
 
@@ -20,6 +21,7 @@ jobs:
         uses: hecrj/setup-rust-action@v1
         with:
           components: clippy
+          rust-version: nightly
       - uses: actions/checkout@v2
       - run: cargo clippy --all-targets -- -D clippy::all
 
@@ -28,8 +30,10 @@ jobs:
     steps:
       - name: Set up Rust
         uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: nightly
       - uses: actions/checkout@v2
-      - run: cargo check --all
+      - run: cargo +nightly check --all
 
   test:
     needs: [compile]
@@ -40,7 +44,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Test
-      run: cargo test
+      run: cargo +nightly test
   # deploy on pushes to master branch
   # assumes aws credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
   # are configured in travis settings
