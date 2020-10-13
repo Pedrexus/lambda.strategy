@@ -41,6 +41,8 @@ jobs:
     steps:
     - name: Setup Rust
       uses: hecrj/setup-rust-action@v1
+      with:
+          rust-version: nightly
     - name: Checkout
       uses: actions/checkout@v2
     - name: Test
@@ -57,6 +59,8 @@ jobs:
     steps:
       - name: Set up Rust
         uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: nightly
       - name: Checkout
         uses: actions/checkout@v2
       - name: Deploy
