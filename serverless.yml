@@ -96,13 +96,13 @@ functions:
 #       Description: "Description for the output"
 #       Value: "Some output value"
 
-custom:
+# custom:
   # this section customizes of the default
   # serverless-rust plugin settings
-  rust:
+  # rust:
     # flags passed to cargo
-    cargoFlags: ''
+    # cargoFlags: ''
     # custom docker tag
-    dockerTag: 'nightly-slim'
+    # dockerTag: 'nightly-slim'
     #  custom docker image
-    dockerImage: 'rustlang/rust'
+    # dockerImage: 'rustlang/rust'
