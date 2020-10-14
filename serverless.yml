@@ -95,3 +95,14 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+custom:
+  # this section customizes of the default
+  # serverless-rust plugin settings
+  rust:
+    # flags passed to cargo
+    cargoFlags: ''
+    # custom docker tag
+    dockerTag: 'nightly-slim'
+    #  custom docker image
+    dockerImage: 'rustlang/rust'

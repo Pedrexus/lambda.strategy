@@ -3,6 +3,9 @@ name = "strategy"
 version = "0.1.0"
 edition = "2018"
 
+[profile.dev]
+debug = 0
+
 [dependencies]
 tokio = { version = "0.2", features = ["macros"] }
 lambda = { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch = "master"}
