@@ -1,7 +1,5 @@
 pub mod poloniex;
 
-use polars::prelude::PolarsError;
-use polars::prelude::{DataFrame, NamedFrom, Series};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
@@ -42,20 +40,5 @@ impl From<Vec<Candle>> for Chart {
             quote_volume: data.iter().map(|item| item.quote_volume).collect(),
             weighted_average: data.iter().map(|item| item.weighted_average).collect(),
         }
-    }
-}
-
-impl Chart {
-    pub fn as_dataframe(&self) -> Result<DataFrame, PolarsError> {
-        DataFrame::new(vec![
-            Series::new("date", &self.date),
-            Series::new("high", &self.high),
-            Series::new("low", &self.low),
-            Series::new("open", &self.open),
-            Series::new("close", &self.close),
-            Series::new("volume", &self.volume),
-            Series::new("quote_volume", &self.quote_volume),
-            Series::new("weighted_average", &self.weighted_average),
-        ])
     }
 }

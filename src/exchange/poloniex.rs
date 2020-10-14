@@ -1,6 +1,5 @@
 use crate::exchange::Candle;
 use crate::exchange::Chart;
-use polars::prelude::{DataFrame, PolarsError};
 use reqwest::get;
 
 pub async fn return_chart_data(
@@ -8,7 +7,7 @@ pub async fn return_chart_data(
     period: u64,
     start: u64,
     end: u64,
-) -> Result<DataFrame, PolarsError> {
+) -> Result<Chart, reqwest::Error> {
     let request_url = format!(
             "https://poloniex.com/public?command={command}&currencyPair={currency_pair}&start={start}&end={end}&period={period}",
             command = "returnChartData",
@@ -18,15 +17,15 @@ pub async fn return_chart_data(
             period = period
         );
 
-    let response = get(&request_url).await.expect("get response");
+    let response = get(&request_url).await?;
 
     if response.status().as_u16() >= 400 {
         panic!(response.text())
     }
 
-    let body: Vec<Candle> = response.json().await.expect("get json");
+    let body: Vec<Candle> = response.json().await?;
 
-    Chart::from(body).as_dataframe()
+    Ok(Chart::from(body))
 }
 
 #[cfg(test)]
@@ -66,13 +65,13 @@ mod tests {
         let start = 1546300800;
         let end = 1546646400;
 
-        let data = return_chart_data(&currency_pair, period, start, end)
+        let chart = return_chart_data(&currency_pair, period, start, end)
             .await
             .unwrap();
 
-        assert_eq!(data.shape(), (25, 8));
+        assert_eq!(chart.high.len(), 25);
 
-        // let item = &data[0];
+        // let item = &chart[0];
 
         // let expected = Candle {
         //     date: 1546300800,

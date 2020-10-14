@@ -1,4 +1,4 @@
-use crate::strategies::{Error, Order};
+use crate::strategies::{Error, Order, Strategy};
 use ta::{indicators::RelativeStrengthIndex as RelativeStrengthIndexIndicator, Next};
 
 #[cfg(feature = "serde")]
@@ -36,3 +36,5 @@ impl Next<f64> for RelativeStrengthIndex {
         }
     }
 }
+
+impl Strategy<f64> for RelativeStrengthIndex {}
