@@ -22,8 +22,8 @@ jobs:
       #  run:  cargo fmt --all -- --check
       #- name: Lint
       #  run:  cargo clippy --all-targets -- -D clippy::all
-      - name: Compile
-        run:  cargo check --all
+      # - name: Compile
+      #   run:  cargo check --all
       - name: Test
         run:  cargo test
       - name: Deploy
