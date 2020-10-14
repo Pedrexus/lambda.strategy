@@ -18,10 +18,10 @@ jobs:
           rust-version: nightly
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Codestyle
-        run:  cargo fmt --all -- --check
-      - name: Lint
-        run:  cargo clippy --all-targets -- -D clippy::all
+      #- name: Codestyle
+      #  run:  cargo fmt --all -- --check
+      #- name: Lint
+      #  run:  cargo clippy --all-targets -- -D clippy::all
       - name: Compile
         run:  cargo check --all
       - name: Test
