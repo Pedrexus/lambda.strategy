@@ -1,11 +1,10 @@
 use crate::exchange::poloniex;
 use crate::strategies::{Order, RelativeStrengthIndex, Strategy};
-use lambda::Context;
 use serde_json::{json, Value};
 
 pub type HandlerError = Box<dyn std::error::Error + Sync + Send + 'static>;
 
-pub async fn handler(event: Value, _: Context) -> Result<Value, HandlerError> {
+pub async fn handler(event: Value, _: lambda::Context) -> Result<Value, HandlerError> {
     let currency_pair = event["currency_pair"].as_str().unwrap();
     let period = event["period"].as_u64().unwrap();
     let start = event["start"].as_u64().unwrap();
@@ -13,7 +12,7 @@ pub async fn handler(event: Value, _: Context) -> Result<Value, HandlerError> {
 
     let chart = poloniex::return_chart_data(currency_pair, period, start, end).await?;
 
-    let mut strategy = RelativeStrengthIndex::new(14, 30.0, 70.0).unwrap();
+    let mut strategy = RelativeStrengthIndex::new(14, 30., 70.).unwrap();
     let analysis = strategy.evaluate(chart.close);
 
     let msg = match analysis.last().unwrap() {

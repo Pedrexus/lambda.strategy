@@ -2,6 +2,7 @@
 name = "strategy"
 version = "0.1.0"
 edition = "2018"
+autobins = false
 
 [dependencies]
 tokio = { version = "0.2", features = ["macros"] }
@@ -9,6 +10,14 @@ lambda = { git = "https://github.com/awslabs/aws-lambda-rust-runtime/", branch =
 serde_json = "1.0"
 serde = "^1"
 reqwest = { version = "^0.10", features = ["json"] }
-num-traits = "0.2.12"
 futures = "0.3.6"
 ta = "0.3.0"
+yahoo-finance = "0.3.0"
+market-finance = "0.3.0"
+chrono = "0.4.19"
+snafu = "0.6.9"
+url = "2.1.1"
+
+[[bin]]
+name = "bootstrap"  # this is required for aws lambda custom runtime
+path = "src/main.rs"

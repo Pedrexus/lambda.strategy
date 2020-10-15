@@ -1,5 +1,7 @@
 use crate::strategies::{Error, Order, Strategy};
-use ta::{indicators::RelativeStrengthIndex as RelativeStrengthIndexIndicator, Next};
+use ta::{
+    indicators::RelativeStrengthIndex as RelativeStrengthIndexIndicator, Next,
+};
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
@@ -13,7 +15,11 @@ pub struct RelativeStrengthIndex {
 }
 
 impl RelativeStrengthIndex {
-    pub fn new(n: u32, upper_bound: f64, lower_bound: f64) -> Result<Self, Error> {
+    pub fn new(
+        n: u32,
+        upper_bound: f64,
+        lower_bound: f64,
+    ) -> Result<Self, Error> {
         let rsi_indicator = RelativeStrengthIndexIndicator::new(n)?;
         let rsi_strategy = Self {
             rsi_indicator,
@@ -30,7 +36,7 @@ impl Next<f64> for RelativeStrengthIndex {
 
     fn next(&mut self, input: f64) -> Self::Output {
         match self.rsi_indicator.next(input) {
-            rsi if rsi < self.lower_bound => Order::Buy,  // oversold
+            rsi if rsi < self.lower_bound => Order::Buy, // oversold
             rsi if rsi > self.upper_bound => Order::Sell, // overbought
             _ => Order::Hold,
         }
