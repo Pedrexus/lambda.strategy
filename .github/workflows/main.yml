@@ -8,29 +8,57 @@ jobs:
   # are configured in travis settings
   # see https://serverless.com/framework/docs/providers/aws/guide/credentials/
   # for more information
-  deploy:
+  build:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
+
       - name: Set up Rust
         uses: hecrj/setup-rust-action@v1
+
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Codestyle
-        run:  cargo fmt --all -- --check
+        run: cargo fmt --all -- --check
+
       - name: Compile
-        run:  cargo check --all
+        run: cargo check --all
+
       - name: Lint
-        run:  cargo clippy --all-targets -- -D clippy::all
+        run: cargo clippy --all-targets -- -D clippy::all
+
       - name: Test
-        run:  cargo test
-      - name: Deploy
-        if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          #STAGE: prod
+        run: cargo test
+
+      # Since Lambda uses Amazon Linux,
+      # the executable targets x86_64-unknown-linux-musl platform.
+      - name: Build for Amazon Linux
         run: |
-          npm install
-          npx serverless deploy --conceal
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          cp ./target/release/examples/bootstrap ./bootstrap
+          zip ./deploy/lambda.zip bootstrap && rm bootstrap
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deploy
+    steps:
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform format
+        run: terraform fmt -check
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: terraform apply -auto-approve
