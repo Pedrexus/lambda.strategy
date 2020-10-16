@@ -57,7 +57,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           
       - name: Directory
-        run: ls -la
+        run: ls
 
       - name: Terraform format
         run: terraform fmt -check
