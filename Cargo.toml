@@ -18,6 +18,15 @@ chrono = "0.4.19"
 snafu = "0.6.9"
 url = "2.1.1"
 
+# Add openssl-sys as a direct dependency so it can be cross compiled to
+# x86_64-unknown-linux-musl using the "vendored" feature below
+# Force openssl-sys to staticly link in the openssl library. Necessary when
+# cross compiling to x86_64-unknown-linux-musl.
+openssl = { version = "0.10.30", features = ["vendored"] }
+
 [[bin]]
 name = "bootstrap"  # this is required for aws lambda custom runtime
 path = "src/main.rs"
+
+[target.x86_64-unknown-linux-musl]
+linker = "x86_64-linux-musl-gcc"
