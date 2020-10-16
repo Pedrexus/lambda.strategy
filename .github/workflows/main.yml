@@ -8,54 +8,61 @@ jobs:
   # are configured in travis settings
   # see https://serverless.com/framework/docs/providers/aws/guide/credentials/
   # for more information
-  build:
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
+#   build:
+#     if: github.ref == 'refs/heads/master'
+#     runs-on: ubuntu-latest
+#     steps:
 
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
+#       - name: Set up Rust
+#         uses: hecrj/setup-rust-action@v1
 
-      - name: Checkout
-        uses: actions/checkout@v2
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Codestyle
-        run: cargo fmt --all -- --check
+#       - name: Codestyle
+#         run: cargo fmt --all -- --check
 
-      - name: Compile
-        run: cargo check --all
+#       - name: Compile
+#         run: cargo check --all
 
-      - name: Lint
-        run: cargo clippy --all-targets -- -D clippy::all
+#       - name: Lint
+#         run: cargo clippy --all-targets -- -D clippy::all
 
-      - name: Test
-        run: cargo test
-
-      # Since Lambda uses Amazon Linux,
-      # the executable targets x86_64-unknown-linux-musl platform.
-      - name: Build for Amazon Linux
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install pkg-config libssl-dev musl-tools zip
-          export PKG_CONFIG_ALLOW_CROSS=1
-          rustup target add x86_64-unknown-linux-musl
-          cargo build --release --target x86_64-unknown-linux-musl
-          cp ./target/x86_64-unknown-linux-musl/release/bootstrap ./bootstrap
-          zip ./deploy/lambda.zip bootstrap && rm bootstrap
+#       - name: Test
+#         run: cargo test
           
   deploy:
-    needs: build
+    # needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: deploy
     steps:
       
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Set up Rust
+        uses: hecrj/setup-rust-action@v1
+      
+      # Since Lambda uses Amazon Linux,
+      # the executable targets x86_64-unknown-linux-musl platform.
+      - name: Build for Amazon Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install pkg-config libssl-dev musl-tools zip
+          
+          export PKG_CONFIG_ALLOW_CROSS=1
+          
+          pushd ..
+          
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          
+          cp ./target/x86_64-unknown-linux-musl/release/bootstrap ./bootstrap
+          zip ./deploy/lambda.zip bootstrap && rm bootstrap
+          
+          popd
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
