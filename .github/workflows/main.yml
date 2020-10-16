@@ -35,7 +35,10 @@ jobs:
       # the executable targets x86_64-unknown-linux-musl platform.
       - name: Build for Amazon Linux
         run: |
-          sudo apt install pkg-config
+          sudo apt install openssl1.0 libssl1.0.0 libssl1.0-dev
+          cargo clean
+          OPENSSL_LIB_DIR="/usr/lib/x86_64-linux-gnu" 
+          OPENSSL_INCLUDE_DIR="/usr/include/openssl" 
           rustup target add x86_64-unknown-linux-musl
           cargo build --release --target x86_64-unknown-linux-musl
           cp ./target/release/examples/bootstrap ./bootstrap
