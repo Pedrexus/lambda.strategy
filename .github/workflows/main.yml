@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./deploy
+        working-directory: deploy
     steps:
 
       - name: Setup Terraform
