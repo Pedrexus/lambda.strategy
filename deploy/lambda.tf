@@ -15,9 +15,8 @@ resource "aws_s3_bucket_object" "lambda_codebase_zip" {
 
 resource "aws_lambda_function" "strategy_lambda" {
   depends_on = [
-    aws_s3_bucket.static_files,
     aws_s3_bucket_object.lambda_codebase_zip,
-    aws_cloudwatch_log_group.lambda_log_group,
+    aws_iam_role_policy_attachment.lambda_policy,
   ]
 
   # S3 bucket must exist with a packaged .zip before terraform apply
@@ -44,7 +43,7 @@ resource "aws_lambda_function" "strategy_lambda" {
   }
 
   tracing_config {
-    mode = "Active" # enables X-Ray
+    mode = "PassThrough" # disables X-Ray
   }
 
   tags = merge(var.tags, {

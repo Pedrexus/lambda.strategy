@@ -6,7 +6,8 @@ data "aws_caller_identity" "current" {} # account id and more
 # Lambda #
 ##########
 
-data "aws_iam_policy_document" "lambda_role_policy" {
+# assume role policy
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -15,24 +16,41 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
-  statement {
-    actions   = ["logs:CreateLogStream", "logs:CreateLogGroup"]
-    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.lambda_log_group.name}*:*"]
-  }
-  statement {
-    actions   = ["logs:PutLogEvents"]
-    resources = ["arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.lambda_log_group.name}*:*:*"]
-  }
 }
 
 resource "aws_iam_role" "lambda_role" {
   name               = "${var.tags.project}-lambda-role"
-//  path               = "/system/"
-  assume_role_policy = data.aws_iam_policy_document.lambda_role_policy.json
+  path               = "/system/"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+
 
   tags = merge(var.tags, {
     Name = "${var.tags.project}-lambda-role"
   })
+}
+
+# execution policy
+data "aws_iam_policy_document" "lambda_execution_policy_document" {
+  statement {
+    actions   = ["logs:CreateLogStream", "logs:CreateLogGroup", "logs:PutLogEvents"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:*:*:*"]
+  }
+//  statement {
+//    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
+//    resources = ["*"]
+//  }
+}
+
+resource "aws_iam_policy" "lambda_execution_policy" {
+  name        = "${var.tags.project}-lambda-execution-policy"
+  path        = "/"
+  description = "IAM policy for logging from a lambda"
+  policy      = data.aws_iam_policy_document.lambda_execution_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_execution_policy.arn
 }
 
 #############
