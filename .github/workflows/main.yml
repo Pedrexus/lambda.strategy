@@ -49,6 +49,8 @@ jobs:
     defaults:
       run:
         working-directory: deploy
+    env:
+      AWS_STS_REGIONAL_ENDPOINTS: regional
     steps:
       
       - name: Set up Rust
