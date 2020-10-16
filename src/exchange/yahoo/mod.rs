@@ -3,8 +3,8 @@
 mod macros;
 
 mod chart;
-pub mod period;
 mod models;
+pub mod period;
 
-pub use market_finance::{Bar, Interval, Quote, Timestamped, TradingSession};
 pub use chart::return_chart_data;
+pub use market_finance::{Bar, Interval, Quote, Timestamped, TradingSession};

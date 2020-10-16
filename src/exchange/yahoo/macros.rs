@@ -1,5 +1,3 @@
-
-
 /// Used in conjunction with Serde to create good public structures
 macro_rules! ez_serde {
    ($name:ident$(< $( $lt:lifetime ),+ >)? { $($(#[$m:meta])? $field:ident: $t:ty),* } ) => {

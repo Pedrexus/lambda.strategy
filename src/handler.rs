@@ -4,13 +4,17 @@ use serde_json::{json, Value};
 
 pub type HandlerError = Box<dyn std::error::Error + Sync + Send + 'static>;
 
-pub async fn handler(event: Value, _: lambda::Context) -> Result<Value, HandlerError> {
+pub async fn handler(
+    event: Value,
+    _: lambda::Context,
+) -> Result<Value, HandlerError> {
     let currency_pair = event["currency_pair"].as_str().unwrap();
     let period = event["period"].as_u64().unwrap();
     let start = event["start"].as_u64().unwrap();
     let end = event["end"].as_u64().unwrap();
 
-    let chart = poloniex::return_chart_data(currency_pair, period, start, end).await?;
+    let chart =
+        poloniex::return_chart_data(currency_pair, period, start, end).await?;
 
     let mut strategy = RelativeStrengthIndex::new(14, 30., 70.).unwrap();
     let analysis = strategy.evaluate(chart.close);
@@ -41,7 +45,7 @@ mod tests {
             "end": 1602453273,
         });
 
-        let response = handler(event.clone(), Context::default())
+        let response = handler(event.clone(), lambda::Context::default())
             .await
             .expect("expected Ok(_) value");
 

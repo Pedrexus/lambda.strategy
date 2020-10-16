@@ -1,6 +1,6 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize};
 use chrono::serde::ts_seconds;
+use chrono::{DateTime, Utc};
+use serde::Deserialize;
 
 ez_serde!(Meta {
    symbol: String,
@@ -43,6 +43,9 @@ ez_serde!(Data {
    indicators: Indicators
 });
 
-ez_serde!(Error {code: String, description: String });
+ez_serde!(Error {
+    code: String,
+    description: String
+});
 ez_serde!(Chart { result: Option<Vec<Data>>, error: Option<Error> });
 ez_serde!(YahooResponse { chart: Chart });

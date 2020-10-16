@@ -1,7 +1,7 @@
+use crate::exchange::yahoo::period::{CandlestickInterval, ChartRange};
+use crate::exchange::yahoo::return_chart_data;
 use crate::handler::{handler, HandlerError};
 use lambda::handler_fn;
-use crate::exchange::yahoo::return_chart_data;
-use crate::exchange::yahoo::period::{CandlestickInterval, ChartRange};
 use market_finance::Timestamped;
 
 mod exchange;

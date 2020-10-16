@@ -40,7 +40,7 @@ provider "aws" {
 
 
 variable "tags" {
-  type = "map"
+  type = map(string)
   default = {
     "project" = "Strategy"
     "owner"   = "Pedro Valois"

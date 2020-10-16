@@ -1,7 +1,7 @@
 mod models;
 
+use crate::exchange::poloniex::models::{Candle, Chart};
 use reqwest::get;
-use crate::exchange::poloniex::models::{Chart, Candle};
 
 pub async fn return_chart_data(
     currency_pair: &str,

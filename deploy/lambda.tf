@@ -1,5 +1,5 @@
 variable lambda_file {
-  type = "map"
+  type = map(string)
   default = {
     filename = "lambda.zip"
     location = "./lambda.zip"
