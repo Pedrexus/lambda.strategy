@@ -1,5 +1,5 @@
 {
     "files.autoSave": "onFocusChange",
     "editor.formatOnSave": true,
-    "rust-client.channel": "nightly",
+    "rust-client.channel": "nightly"
 }
