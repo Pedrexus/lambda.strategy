@@ -35,10 +35,10 @@ data "aws_iam_policy_document" "lambda_execution_policy_document" {
     actions   = ["logs:CreateLogStream", "logs:CreateLogGroup", "logs:PutLogEvents"]
     resources = ["arn:${data.aws_partition.current.partition}:logs:*:*:*"]
   }
-//  statement {
-//    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
-//    resources = ["*"]
-//  }
+  //  statement {
+  //    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
+  //    resources = ["*"]
+  //  }
 }
 
 resource "aws_iam_policy" "lambda_execution_policy" {
