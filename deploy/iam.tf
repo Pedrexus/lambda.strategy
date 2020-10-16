@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 
 resource "aws_iam_role" "lambda_role" {
   name               = "${var.tags.project}-lambda-role"
-  path               = "/system/"
+//  path               = "/system/"
   assume_role_policy = data.aws_iam_policy_document.lambda_role_policy.json
 
   tags = merge(var.tags, {

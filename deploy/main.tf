@@ -31,8 +31,6 @@ terraform {
 }
 
 provider "aws" {
-  # uses the default credentials
-  profile = "default"
   region  = "us-east-1"
   # N. Virginia
   version = "~> 3.6.0"
@@ -42,7 +40,7 @@ provider "aws" {
 variable "tags" {
   type = map(string)
   default = {
-    "project" = "Strategy"
-    "owner"   = "Pedro Valois"
+    "project" = "strategy"
+    "owner"   = "pedro valois"
   }
 }
