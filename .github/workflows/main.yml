@@ -51,6 +51,8 @@ jobs:
         working-directory: deploy
     env:
       AWS_STS_REGIONAL_ENDPOINTS: regional
+      AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
     steps:
       
       - name: Set up Rust
