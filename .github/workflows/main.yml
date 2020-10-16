@@ -50,6 +50,12 @@ jobs:
       run:
         working-directory: deploy
     steps:
+      
+      - name: Set up Rust
+        uses: hecrj/setup-rust-action@v1
+
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
