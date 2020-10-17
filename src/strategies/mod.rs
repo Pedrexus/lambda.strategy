@@ -1,8 +1,8 @@
 mod rsi;
 
+use market_finance::Bar;
 pub use rsi::RelativeStrengthIndex;
 pub use ta::Next;
-use market_finance::Bar;
 
 pub type Error = Box<dyn std::error::Error + 'static>;
 

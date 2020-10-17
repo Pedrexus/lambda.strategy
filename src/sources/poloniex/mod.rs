@@ -1,9 +1,9 @@
 mod models;
 
-use super::error::Result;
 use super::error;
-use crate::sources::poloniex::models::Candle;
+use super::error::Result;
 use crate::sources::models::Source::Poloniex;
+use crate::sources::poloniex::models::Candle;
 use crate::sources::yahoo::period::{CandlestickInterval, ChartRange};
 use chrono::Utc;
 use market_finance::Bar;
@@ -43,7 +43,8 @@ pub async fn load(
     end: u64,
 ) -> Result<Vec<Bar>> {
     let mut url = Url::parse(BASE_URL)
-        .context(error::InternalURL { url: BASE_URL }).unwrap();
+        .context(error::InternalURL { url: BASE_URL })
+        .unwrap();
     url.query_pairs_mut()
         .append_pair("command", "returnChartData")
         .append_pair("currencyPair", currency_pair)
@@ -53,7 +54,8 @@ pub async fn load(
 
     let response = reqwest::get(url)
         .await
-        .context(error::RequestFailed { api: Poloniex }).unwrap();
+        .context(error::RequestFailed { api: Poloniex })
+        .unwrap();
 
     let response_url = response.url().to_string();
 
@@ -66,9 +68,10 @@ pub async fn load(
         }
     );
 
-    let data = response.text().await.context(error::UnexpectedErrorRead {
-        url: &response_url,
-    })?;
+    let data = response
+        .text()
+        .await
+        .context(error::UnexpectedErrorRead { url: &response_url })?;
     let chart = serde_json::from_str::<Vec<Candle>>(&data)
         .context(error::BadData { api: Poloniex })?;
 

@@ -1,24 +1,24 @@
-use serde::{Deserialize, Serialize};
 use market_finance::Bar;
+use serde::{Deserialize, Serialize};
 
 ez_serde!(Candle {
     #[serde(rename = "timestamp", default)]
-   date: u64,
+    date: u64,
 
-   #[serde(rename = "open", default)]
-   open: f64,
+    #[serde(rename = "open", default)]
+    open: f64,
 
-   #[serde(rename = "high", default)]
-   high: f64,
+    #[serde(rename = "high", default)]
+    high: f64,
 
-   #[serde(rename = "low", default)]
-   low: f64,
+    #[serde(rename = "low", default)]
+    low: f64,
 
-   #[serde(rename = "close", default)]
-   close: f64,
+    #[serde(rename = "close", default)]
+    close: f64,
 
-   #[serde(rename = "volume", default)]
-   volume: f64
+    #[serde(rename = "volume", default)]
+    volume: f64
 });
 
 impl From<Candle> for Bar {

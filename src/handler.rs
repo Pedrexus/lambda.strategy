@@ -24,7 +24,7 @@ pub async fn handler(
             Order::Buy => format!("time to buy {}!", symb),
             Order::Sell => format!("time to sell {}!", symb),
             Order::Hold => format!("hold {}", symb),
-        }  ;
+        };
 
         messages.push(msg);
     }
@@ -80,4 +80,3 @@ mod tests {
         Ok(())
     }
 }
-

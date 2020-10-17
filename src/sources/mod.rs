@@ -36,7 +36,11 @@ pub async fn return_chart_data(
         .unwrap();
 
     match src {
-        Source::Yahoo => yahoo::return_chart_data(symbol, range, interval).await,
-        Source::Poloniex => poloniex::return_chart_data(symbol, range, interval).await,
+        Source::Yahoo => {
+            yahoo::return_chart_data(symbol, range, interval).await
+        }
+        Source::Poloniex => {
+            poloniex::return_chart_data(symbol, range, interval).await
+        }
     }
 }

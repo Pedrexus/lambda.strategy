@@ -1,7 +1,7 @@
 use chrono::{DateTime, Duration, Utc};
+use std::collections::HashMap;
 use std::fmt;
 use std::str::FromStr;
-use std::collections::HashMap;
 
 /// An interval use when requesting periods of quote information.
 /// ChartRange = start/end
@@ -149,7 +149,9 @@ impl FromStr for ChartRange {
     type Err = ();
 
     fn from_str(s: &str) -> Result<ChartRange, Self::Err> {
-        Ok(*Self::map().get(s).expect(format!("invalid range {}", s).as_str()))
+        Ok(*Self::map()
+            .get(s)
+            .expect(format!("invalid range {}", s).as_str()))
     }
 }
 

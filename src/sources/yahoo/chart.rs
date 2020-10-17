@@ -1,4 +1,4 @@
-use reqwest::{Url};
+use reqwest::Url;
 use snafu::{ensure, OptionExt, ResultExt};
 
 use crate::sources::models::Source::Yahoo;
@@ -13,7 +13,9 @@ const YAHOO_BASE_URL: &str =
 /// Helper function to build up the main query URL
 fn build_query(symbol: &str) -> Result<Url> {
     Ok(Url::parse(YAHOO_BASE_URL)
-        .context(error::InternalURL { url: YAHOO_BASE_URL })?
+        .context(error::InternalURL {
+            url: YAHOO_BASE_URL,
+        })?
         .join(symbol)
         .context(error::InternalURL { url: symbol })?)
 }
@@ -50,7 +52,7 @@ async fn load(url: &Url) -> Result<Data> {
             code: err.code,
             description: err.description,
         }
-            .fail()?;
+        .fail()?;
     }
 
     // we have a result to process
