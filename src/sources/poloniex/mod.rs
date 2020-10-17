@@ -75,7 +75,7 @@ pub async fn load(
     let chart = serde_json::from_str::<Vec<Candle>>(&data)
         .context(error::BadData { api: Poloniex })?;
 
-    Ok(chart.into_iter().map(|c| Bar::from(c)).collect())
+    Ok(chart.into_iter().map(Bar::from).collect())
 }
 
 #[cfg(test)]

@@ -9,7 +9,7 @@ pub async fn handler(
     _: lambda::Context,
 ) -> Result<Value, HandlerError> {
     let mut messages = Vec::new();
-    for row in event.as_array().unwrap().into_iter() {
+    for row in event.as_array().unwrap().iter() {
         let chart =
             return_chart_data(&row["source"], &row["symbol"], &row["settings"])
                 .await

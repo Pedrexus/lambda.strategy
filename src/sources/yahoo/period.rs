@@ -31,10 +31,10 @@ impl ChartRange {
         match self {
             Self::_1d => Duration::days(1),
             Self::_5d => Duration::days(5),
-            Self::_1mo => Duration::weeks(1 * 4),
+            Self::_1mo => Duration::weeks(4),
             Self::_3mo => Duration::weeks(3 * 4),
             Self::_6mo => Duration::weeks(6 * 4),
-            Self::_1y => Duration::weeks(1 * 52),
+            Self::_1y => Duration::weeks(52),
             Self::_2y => Duration::weeks(2 * 52),
             Self::_5y => Duration::weeks(5 * 52),
             Self::_10y => Duration::weeks(10 * 52),
@@ -151,7 +151,7 @@ impl FromStr for ChartRange {
     fn from_str(s: &str) -> Result<ChartRange, Self::Err> {
         Ok(*Self::map()
             .get(s)
-            .expect(format!("invalid range {}", s).as_str()))
+            .unwrap_or_else(|| panic!("invalid range {}", s)))
     }
 }
 
