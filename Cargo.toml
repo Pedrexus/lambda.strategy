@@ -13,7 +13,7 @@ reqwest = { version = "^0.10", features = ["json"] }
 futures = "0.3.6"
 ta = "0.3.0"
 market-finance = "0.3.0"
-chrono = "0.4.19"
+chrono = { version = "0.4.19", features = ["serde"] }
 snafu = "0.6.9"
 url = "2.1.1"
 
