@@ -1,13 +1,10 @@
-use chrono::serde::ts_seconds;
-use chrono::{DateTime, Utc};
-use reqwest::{Response, Url};
-use serde::Deserialize;
+use reqwest::{Url};
 use snafu::{ensure, OptionExt, ResultExt};
 
-use crate::exchange::models::API::Yahoo;
-use crate::exchange::yahoo::models::{Data, YahooResponse};
-use crate::exchange::yahoo::period::{CandlestickInterval, ChartRange};
-use crate::exchange::{error, error::Result, fetch};
+use crate::sources::models::Source::Yahoo;
+use crate::sources::yahoo::models::{Data, YahooResponse};
+use crate::sources::yahoo::period::{CandlestickInterval, ChartRange};
+use crate::sources::{error, error::Result};
 use market_finance::Bar;
 
 const YAHOO_BASE_URL: &str =
@@ -15,7 +12,10 @@ const YAHOO_BASE_URL: &str =
 
 /// Helper function to build up the main query URL
 fn build_query(symbol: &str) -> Result<Url> {
-    fetch(Yahoo, YAHOO_BASE_URL, symbol)
+    Ok(Url::parse(YAHOO_BASE_URL)
+        .context(error::InternalURL { url: YAHOO_BASE_URL })?
+        .join(symbol)
+        .context(error::InternalURL { url: symbol })?)
 }
 
 async fn load(url: &Url) -> Result<Data> {
@@ -50,7 +50,7 @@ async fn load(url: &Url) -> Result<Data> {
             code: err.code,
             description: err.description,
         }
-        .fail()?;
+            .fail()?;
     }
 
     // we have a result to process

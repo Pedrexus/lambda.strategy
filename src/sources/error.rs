@@ -1,4 +1,5 @@
-use crate::exchange::{models::API, yahoo::period::CandlestickInterval};
+use crate::sources::models::Source;
+use crate::sources::yahoo::period::CandlestickInterval;
 use snafu::Snafu;
 
 /// All possible errors that can occur when using yahoo finance
@@ -6,7 +7,10 @@ use snafu::Snafu;
 #[snafu(visibility = "pub(crate)")]
 pub enum InnerError {
     #[snafu(display("{:?} returned invalid data - {}", api, source.to_string()))]
-    BadData { api: API, source: serde_json::Error },
+    BadData {
+        api: Source,
+        source: serde_json::Error,
+    },
 
     #[snafu(display(
         "{:?} call failed. '{}' returned a {} result.",
@@ -14,7 +18,11 @@ pub enum InnerError {
         url,
         status
     ))]
-    CallFailed { api: API, url: String, status: u16 },
+    CallFailed {
+        api: Source,
+        url: String,
+        status: u16,
+    },
 
     #[snafu(display(
         "{:?} chart failed to load {} - {}.",
@@ -23,7 +31,7 @@ pub enum InnerError {
         description
     ))]
     ChartFailed {
-        api: API,
+        api: Source,
         code: String,
         description: String,
     },
@@ -40,17 +48,20 @@ pub enum InnerError {
         source: url::ParseError,
     },
 
+    #[snafu(display("API of name {} is not registered.", name))]
+    InvalidApiName { name: String },
+
     #[snafu(display("Start date cannot be after the end date"))]
     InvalidStartDate,
 
     #[snafu(display("{:?} returned invalid data - {}", api, reason))]
-    MissingData { api: API, reason: String },
+    MissingData { api: Source, reason: String },
 
     #[snafu(display("Intraday intervals like {} are not allowed", interval))]
     NoIntraday { interval: CandlestickInterval },
 
     #[snafu(display("{:?} call failed for unknown reason.", api))]
-    RequestFailed { api: API, source: reqwest::Error },
+    RequestFailed { api: Source, source: reqwest::Error },
 
     #[snafu(display(
         "Unexpected {:?} failure. '{}' returned a {}",
@@ -58,16 +69,16 @@ pub enum InnerError {
         url,
         code
     ))]
-    UnexpectedFailure { api: API, url: String, code: u16 },
+    UnexpectedFailure { api: Source, url: String, code: u16 },
 
     #[snafu(display("Unexpected error while reading data from '{}'", url))]
     UnexpectedErrorRead { url: String, source: reqwest::Error },
 
     #[snafu(display("{:?} call failed.  Expected data is missing.", api))]
-    UnexpectedError { api: API },
+    UnexpectedError { api: Source },
 
     #[snafu(display("Unexpected error from {:?} - data missing", api))]
-    Unknown { api: API },
+    Unknown { api: Source },
 
     #[snafu(display(
         "We currently do not support securities of type '{}'",

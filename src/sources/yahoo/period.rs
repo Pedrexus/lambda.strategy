@@ -1,4 +1,7 @@
+use chrono::{DateTime, Duration, Utc};
 use std::fmt;
+use std::str::FromStr;
+use std::collections::HashMap;
 
 /// An interval use when requesting periods of quote information.
 /// ChartRange = start/end
@@ -22,6 +25,46 @@ pub enum ChartRange {
 impl ChartRange {
     pub fn allows_intraday(&self) -> bool {
         matches!(self, Self::_1d | Self::_5d | Self::_1mo)
+    }
+
+    pub fn as_duration(&self) -> Duration {
+        match self {
+            Self::_1d => Duration::days(1),
+            Self::_5d => Duration::days(5),
+            Self::_1mo => Duration::weeks(1 * 4),
+            Self::_3mo => Duration::weeks(3 * 4),
+            Self::_6mo => Duration::weeks(6 * 4),
+            Self::_1y => Duration::weeks(1 * 52),
+            Self::_2y => Duration::weeks(2 * 52),
+            Self::_5y => Duration::weeks(5 * 52),
+            Self::_10y => Duration::weeks(10 * 52),
+            Self::_ytd => Duration::weeks(15 * 52),
+            Self::_max => Duration::max_value(),
+        }
+    }
+
+    pub fn as_datetime(&self) -> DateTime<Utc> {
+        Utc::now() - self.as_duration()
+    }
+
+    fn values() -> [Self; 11] {
+        [
+            Self::_1d,
+            Self::_5d,
+            Self::_1mo,
+            Self::_3mo,
+            Self::_6mo,
+            Self::_1y,
+            Self::_2y,
+            Self::_5y,
+            Self::_10y,
+            Self::_ytd,
+            Self::_max,
+        ]
+    }
+
+    fn map() -> HashMap<String, Self> {
+        Self::values().iter().map(|i| (i.to_string(), *i)).collect()
     }
 }
 
@@ -67,6 +110,33 @@ impl CandlestickInterval {
                 | Self::_90m
         )
     }
+
+    fn values() -> [Self; 18] {
+        [
+            Self::_1m,
+            Self::_2m,
+            Self::_5m,
+            Self::_15m,
+            Self::_30m,
+            Self::_60m,
+            Self::_90m,
+            Self::_1d,
+            Self::_5d,
+            Self::_1mo,
+            Self::_3mo,
+            Self::_6mo,
+            Self::_1y,
+            Self::_2y,
+            Self::_5y,
+            Self::_10y,
+            Self::_ytd,
+            Self::_max,
+        ]
+    }
+
+    fn map() -> HashMap<String, Self> {
+        Self::values().iter().map(|i| (i.to_string(), *i)).collect()
+    }
 }
 
 impl fmt::Display for ChartRange {
@@ -75,9 +145,25 @@ impl fmt::Display for ChartRange {
     }
 }
 
+impl FromStr for ChartRange {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<ChartRange, Self::Err> {
+        Ok(*Self::map().get(s).expect(format!("invalid range {}", s).as_str()))
+    }
+}
+
 impl fmt::Display for CandlestickInterval {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str(&format!("{:?}", self)[1..]) // strip the leading underscore
+    }
+}
+
+impl FromStr for CandlestickInterval {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<CandlestickInterval, Self::Err> {
+        Ok(*Self::map().get(s).unwrap())
     }
 }
 

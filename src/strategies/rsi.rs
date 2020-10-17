@@ -43,4 +43,4 @@ impl Next<f64> for RelativeStrengthIndex {
     }
 }
 
-impl Strategy<f64> for RelativeStrengthIndex {}
+impl Strategy for RelativeStrengthIndex {}

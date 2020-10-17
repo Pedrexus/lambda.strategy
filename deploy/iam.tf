@@ -39,6 +39,10 @@ data "aws_iam_policy_document" "lambda_execution_policy_document" {
   //    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
   //    resources = ["*"]
   //  }
+  statement {
+    actions   = ["SNS:Publish"]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "lambda_execution_policy" {

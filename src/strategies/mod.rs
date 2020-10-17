@@ -2,9 +2,11 @@ mod rsi;
 
 pub use rsi::RelativeStrengthIndex;
 pub use ta::Next;
+use market_finance::Bar;
 
 pub type Error = Box<dyn std::error::Error + 'static>;
 
+#[derive(Debug)]
 pub enum Order {
     Hold,
     Buy,
@@ -16,8 +18,8 @@ pub enum Order {
 //     Close, // bought coin
 // }
 
-pub trait Strategy<T>: Next<T, Output = Order> {
-    fn evaluate(&mut self, data: Vec<T>) -> Vec<Order> {
-        data.into_iter().map(|v| self.next(v)).collect()
+pub trait Strategy: Next<f64, Output = Order> {
+    fn evaluate(&mut self, data: Vec<Bar>) -> Vec<Order> {
+        data.into_iter().map(|v| self.next(v.close)).collect()
     }
 }

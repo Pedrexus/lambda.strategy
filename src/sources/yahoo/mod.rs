@@ -1,7 +1,3 @@
-// make sure our macros are all loaded
-#[macro_use]
-mod macros;
-
 mod chart;
 mod models;
 pub mod period;
