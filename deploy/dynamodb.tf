@@ -1,10 +1,10 @@
 resource "aws_dynamodb_table" "input_dynamodb_table" {
-  name = "Input"
-  billing_mode = "PROVISIONED"
-  read_capacity = 5
+  name           = "Input"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
   write_capacity = 5
-  hash_key = "symbol"
-  range_key = "source"
+  hash_key       = "symbol"
+  range_key      = "source"
 
   attribute {
     name = "symbol"
@@ -23,8 +23,8 @@ resource "aws_dynamodb_table" "input_dynamodb_table" {
 
 resource "aws_dynamodb_table_item" "input_1" {
   table_name = aws_dynamodb_table.input_dynamodb_table.name
-  hash_key = aws_dynamodb_table.input_dynamodb_table.hash_key
-  range_key      = aws_dynamodb_table.input_dynamodb_table.range_key
+  hash_key   = aws_dynamodb_table.input_dynamodb_table.hash_key
+  range_key  = aws_dynamodb_table.input_dynamodb_table.range_key
 
   item = <<ITEM
 {
@@ -66,8 +66,8 @@ ITEM
 
 resource "aws_dynamodb_table_item" "input_2" {
   table_name = aws_dynamodb_table.input_dynamodb_table.name
-  hash_key = aws_dynamodb_table.input_dynamodb_table.hash_key
-  range_key      = aws_dynamodb_table.input_dynamodb_table.range_key
+  hash_key   = aws_dynamodb_table.input_dynamodb_table.hash_key
+  range_key  = aws_dynamodb_table.input_dynamodb_table.range_key
 
   item = <<ITEM
 {
