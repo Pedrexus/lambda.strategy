@@ -43,7 +43,7 @@ resource "aws_lambda_function" "strategy_lambda" {
   }
 
   tracing_config {
-    mode = "PassThrough" # disables X-Ray
+    mode = "Active" # disables X-Ray
   }
 
   tags = merge(var.tags, {
@@ -52,13 +52,10 @@ resource "aws_lambda_function" "strategy_lambda" {
 }
 
 resource "aws_lambda_event_source_mapping" "dynamodb_event" {
-  event_source_arn = aws_dynamodb_table.input_dynamodb_table.stream_arn
-  function_name    = aws_lambda_function.strategy_lambda.arn
-
-  enabled                = true
-  batch_size             = 10
-  maximum_retry_attempts = 10
+  event_source_arn       = aws_dynamodb_table.input_dynamodb_table.stream_arn
+  function_name          = aws_lambda_function.strategy_lambda.arn
   starting_position      = "LATEST"
+  maximum_retry_attempts = 1
 }
 
 resource "aws_lambda_function_event_invoke_config" "lambda_output_signal" {

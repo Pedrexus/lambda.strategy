@@ -17,6 +17,9 @@ chrono = { version = "0.4.19", features = ["serde"] }
 snafu = "0.6.9"
 url = "2.1.1"
 
+rusoto_core = "0.45.0"
+dynomite = "0.10.0"
+
 # Add openssl-sys as a direct dependency so it can be cross compiled to
 # x86_64-unknown-linux-musl using the "vendored" feature below
 # Force openssl-sys to staticly link in the openssl library. Necessary when

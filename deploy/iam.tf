@@ -1,6 +1,9 @@
-data "aws_partition" "current" {}       # == "aws" in most cases
-data "aws_region" "current" {}          # project region
-data "aws_caller_identity" "current" {} # account id and more
+data "aws_partition" "current" {}
+# == "aws" in most cases
+data "aws_region" "current" {}
+# project region
+data "aws_caller_identity" "current" {}
+# account id and more
 
 ##########
 # Lambda #
@@ -9,11 +12,13 @@ data "aws_caller_identity" "current" {} # account id and more
 # assume role policy
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = [
+    "sts:AssumeRole"]
 
     principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
+      type = "Service"
+      identifiers = [
+      "lambda.amazonaws.com"]
     }
   }
 }
@@ -31,17 +36,40 @@ resource "aws_iam_role" "lambda_role" {
 
 # execution policy
 data "aws_iam_policy_document" "lambda_execution_policy_document" {
+  // Logs
   statement {
-    actions   = ["logs:CreateLogStream", "logs:CreateLogGroup", "logs:PutLogEvents"]
+    actions = [
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup",
+      "logs:PutLogEvents"
+    ]
     resources = ["arn:${data.aws_partition.current.partition}:logs:*:*:*"]
   }
-  //  statement {
-  //    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
-  //    resources = ["*"]
-  //  }
+  // X-Ray
   statement {
-    actions   = ["SNS:Publish"]
+    actions   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
     resources = ["*"]
+  }
+  // Enhanced Monitoring
+  statement {
+    actions   = ["ssm:GetParameter"]
+    resources = ["arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/AmazonCloudWatch-*"]
+  }
+  // Emit Notifications
+  statement {
+    actions = [
+    "SNS:Publish"]
+    resources = ["arn:${data.aws_partition.current.partition}:sns:*:*:*"]
+  }
+  // DynamoDB Invocation
+  statement {
+    actions = [
+      "dynamodb:DescribeStream",
+      "dynamodb:GetRecords",
+      "dynamodb:GetShardIterator",
+      "dynamodb:ListStreams"
+    ]
+    resources = ["arn:${data.aws_partition.current.partition}:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
   }
 }
 
@@ -65,19 +93,22 @@ data "aws_iam_policy_document" "s3_bucket_policy_document" {
   // denies all s3 access without ssl
   // complies with s3-bucket-ssl-requests-only rule
   statement {
-    effect    = "Deny"
-    actions   = ["s3:*"]
+    effect = "Deny"
+    actions = [
+    "s3:*"]
     resources = ["arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.static_files.bucket}/*"]
 
     # anonymous user
     principals {
-      identifiers = ["*"]
-      type        = "*"
+      identifiers = [
+      "*"]
+      type = "*"
     }
 
     condition {
-      test     = "Bool"
-      values   = [false]
+      test = "Bool"
+      values = [
+      false]
       variable = "aws:SecureTransport"
     }
   }

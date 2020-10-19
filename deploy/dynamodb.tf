@@ -1,10 +1,12 @@
 resource "aws_dynamodb_table" "input_dynamodb_table" {
-  name           = "Input"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "symbol"
-  range_key      = "source"
+  name             = "Input"
+  billing_mode     = "PROVISIONED"
+  stream_enabled   = true
+  stream_view_type = "KEYS_ONLY"
+  read_capacity    = 5
+  write_capacity   = 5
+  hash_key         = "symbol"
+  range_key        = "source"
 
   attribute {
     name = "symbol"

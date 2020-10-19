@@ -44,3 +44,10 @@ variable "tags" {
     "owner"   = "pedro valois"
   }
 }
+
+variable user {
+  type = map(string)
+  default = {
+    phone = "+5516997705524"
+  }
+}
