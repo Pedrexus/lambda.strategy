@@ -57,17 +57,3 @@ resource "aws_lambda_event_source_mapping" "dynamodb_event" {
   starting_position      = "LATEST"
   maximum_retry_attempts = 1
 }
-
-resource "aws_lambda_function_event_invoke_config" "lambda_output_signal" {
-  function_name = aws_lambda_function.strategy_lambda.function_name
-
-  destination_config {
-    //    on_failure {
-    //      destination = aws_sqs_queue.
-    //    }
-
-    on_success {
-      destination = aws_sns_topic.lambda_output.arn
-    }
-  }
-}

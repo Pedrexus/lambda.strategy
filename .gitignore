@@ -1,3 +1,11 @@
 node_modules
-.serverless
+venv
+
 target
+
+.serverless
+.env
+.idea/
+
+deploy/.terraform/
+deploy/lambda.zip

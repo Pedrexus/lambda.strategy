@@ -5,6 +5,7 @@ use std::str::FromStr;
 pub enum Source {
     Yahoo,
     Poloniex,
+    Discord,
 }
 
 impl Display for Source {

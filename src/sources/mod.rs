@@ -2,7 +2,7 @@
 #[macro_use]
 mod macros;
 
-mod error;
+pub mod error;
 pub mod models;
 mod poloniex;
 mod yahoo;
@@ -13,7 +13,7 @@ use error::Result;
 use models::Source;
 use serde_json::Value;
 
-const DEFAULT_RANGE: ChartRange = ChartRange::_5d;
+const DEFAULT_RANGE: ChartRange = ChartRange::_1mo;
 const DEFAULT_INTERVAL: CandlestickInterval = CandlestickInterval::_30m;
 
 pub async fn return_chart_data(
@@ -42,5 +42,6 @@ pub async fn return_chart_data(
         Source::Poloniex => {
             poloniex::return_chart_data(symbol, range, interval).await
         }
+        _ => panic!("{} invalid api", src),
     }
 }

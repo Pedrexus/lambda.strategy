@@ -1,3 +1,4 @@
+use crate::notifications::notify_in_discord;
 use crate::sources::return_chart_data;
 use crate::strategies::{Order, RelativeStrengthIndex, Strategy};
 use serde_json::{json, Value};
@@ -6,32 +7,28 @@ pub type HandlerError = Box<dyn std::error::Error + Sync + Send + 'static>;
 
 // TODO: this should be fetch from dynamodb
 pub async fn handler(
-    event: Value,
+    _event: Value,
     _: lambda::Context,
 ) -> Result<String, HandlerError> {
     let event: Value = json!([
-    {
-        "source": "Yahoo",
-        "symbol": "PETR4.SA",
-        "strategy": "RSI",
-        "settings": {
-            "range": "1mo",
-            "interval": "30m"
+        {
+            "source": "Yahoo",
+            "symbol": "PETR4.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "BTC_XMR",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "MGLU3.SA",
+            "strategy": "RSI",
         }
-    },
-    {
-        "source": "Poloniex",
-        "symbol": "BTC_XMR",
-        "strategy": "RSI",
-    },
-    {
-        "source": "Yahoo",
-        "symbol": "MGLU3.SA",
-        "strategy": "RSI",
-    }
-]);
+    ]);
 
-    let mut msg = String::new();
+    let mut complete_message = String::new();
 
     for row in event.as_array().unwrap().iter() {
         let chart =
@@ -45,17 +42,22 @@ pub async fn handler(
 
         let symb = &row["symbol"].as_str().unwrap();
 
-        match analysis.last().unwrap() {
-            Order::Buy => msg.push_str(format!("time to buy {}!\n", symb).into()),
-            Order::Sell => msg.push_str(format!("time to sell {}!\n", symb).into()),
-            Order::Hold => format!("hold {}", symb),
+        let msg = match analysis.last().unwrap() {
+            Order::Buy => format!("time to buy {}!\n", symb),
+            Order::Sell => format!("time to sell {}!\n", symb),
+            Order::Hold => String::new(), // format!("hold {}", symb),
         };
+
+        complete_message.push_str(msg.as_str());
+
+        // notification
+        notify_in_discord(msg).await;
     }
 
     // hyperparam: take
     // if strategy_analysis.iter().rev().take(3).iter().any(|x| x is Buy) => Buy,
 
-    Ok(msg)
+    Ok(complete_message)
 }
 
 #[cfg(test)]
@@ -66,32 +68,7 @@ mod tests {
 
     #[tokio::test]
     async fn handler_handles() -> Result<(), HandlerError> {
-        let event = json!([
-            {
-                "source": "Yahoo",
-                "symbol": "PETR4.SA",
-                "strategy": "RSI",
-                "parameters": {
-                    "window": 14,
-                    "lower bound": 30,
-                    "upper bound": 70,
-                },
-                "settings": {
-                    "range": "6mo",
-                    "interval": "1d"
-                }
-            },
-            {
-                "source": "Poloniex",
-                "symbol": "BTC_XMR",
-                "strategy": "RSI",
-                "parameters": {
-                    "window": 14,
-                    "lower bound": 30,
-                    "upper bound": 70,
-                }
-            },
-        ]);
+        let event = json!([]);
 
         let response = handler(event.clone(), Context::default()).await?;
 

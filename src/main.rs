@@ -4,6 +4,7 @@ use lambda::handler_fn;
 mod handler;
 // mod models;
 mod aws;
+mod notifications;
 mod sources;
 mod strategies;
 

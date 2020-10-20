@@ -10,21 +10,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone)]
 pub struct RelativeStrengthIndex {
     rsi_indicator: RelativeStrengthIndexIndicator,
-    upper_bound: f64,
     lower_bound: f64,
+    upper_bound: f64,
 }
 
 impl RelativeStrengthIndex {
     pub fn new(
         n: u32,
-        upper_bound: f64,
         lower_bound: f64,
+        upper_bound: f64,
     ) -> Result<Self, Error> {
         let rsi_indicator = RelativeStrengthIndexIndicator::new(n)?;
         let rsi_strategy = Self {
             rsi_indicator,
-            upper_bound,
             lower_bound,
+            upper_bound,
         };
 
         Ok(rsi_strategy)
