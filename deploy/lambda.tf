@@ -39,6 +39,7 @@ resource "aws_lambda_function" "strategy_lambda" {
   environment {
     variables = {
       RUST_BACKTRACE = 1
+      DISCORD_WEBHOOK_URL = var.DISCORD_WEBHOOK_URL
     }
   }
 

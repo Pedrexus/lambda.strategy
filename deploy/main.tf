@@ -41,7 +41,7 @@ variable "tags" {
   type = map(string)
   default = {
     "project" = "strategy"
-    "owner"   = "pedro valois"
+    "owner" = "pedro valois"
   }
 }
 
@@ -50,4 +50,8 @@ variable user {
   default = {
     phone = "+5516997705524"
   }
+}
+
+variable DISCORD_WEBHOOK_URL {
+  type = string
 }

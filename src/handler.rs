@@ -11,9 +11,61 @@ pub async fn handler(
     _: lambda::Context,
 ) -> Result<String, HandlerError> {
     let event: Value = json!([
+        // B3
         {
             "source": "Yahoo",
             "symbol": "PETR4.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "MGLU3.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "AZUL4.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "GGBR4.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "B3SA3.SA",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Yahoo",
+            "symbol": "VALE3.SA",
+            "strategy": "RSI",
+        },
+        // Crypto
+        {
+            "source": "Poloniex",
+            "symbol": "USDT_BTC",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "USDT_ETH",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "USDT_DASH",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "USDT_BULL",
+            "strategy": "RSI",
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "BTC_ETH",
             "strategy": "RSI",
         },
         {
@@ -22,10 +74,15 @@ pub async fn handler(
             "strategy": "RSI",
         },
         {
-            "source": "Yahoo",
-            "symbol": "MGLU3.SA",
+            "source": "Poloniex",
+            "symbol": "BTC_XRP",
             "strategy": "RSI",
-        }
+        },
+        {
+            "source": "Poloniex",
+            "symbol": "BTC_LTC",
+            "strategy": "RSI",
+        },
     ]);
 
     let mut complete_message = String::new();
